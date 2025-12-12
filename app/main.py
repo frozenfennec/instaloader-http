@@ -17,6 +17,7 @@ app = FastAPI(title="Instaloader REST API", version="1.0.0")
 L = instaloader.Instaloader(
     sanitize_paths=True, 
     download_video_thumbnails=False,
+    dirname_pattern=target_directory,
 )
 
 class DownloadPostRequest(BaseModel):
@@ -45,13 +46,12 @@ def download_post(request: DownloadPostRequest):
         logger.info(f"Post {shortcode} loaded successfully: {post}")
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        path = os.path.join(target_directory, name)
-        downloaded = L.download_post(post, target=path)
+        downloaded = L.download_post(post, target=name)
         
         if downloaded:
-            msg = f"Successfully downloaded post {shortcode} to {path}"
+            msg = f"Successfully downloaded post {shortcode} to {name}"
         else:
-            msg = f"Post {shortcode} already exists in {path}"
+            msg = f"Post {shortcode} already exists in {name}"
 
         return DownloadResponse(
             status="success",
