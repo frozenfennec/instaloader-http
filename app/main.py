@@ -4,7 +4,7 @@ import instaloader
 import logging
 import os
 
-target_directory = os.getenv("DOWNLOAD_DIR", "/app/downloads")
+# target_directory = os.getenv("DOWNLOAD_DIR", "/app/downloads")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,7 +17,6 @@ app = FastAPI(title="Instaloader REST API", version="1.0.0")
 L = instaloader.Instaloader(
     sanitize_paths=True, 
     download_video_thumbnails=False,
-    dirname_pattern="{target_directory}",
 )
 
 class DownloadPostRequest(BaseModel):
