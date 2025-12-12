@@ -49,7 +49,7 @@ def download_post(request: DownloadPostRequest):
         
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        downloaded = L.download_post(post, target=target_dir)
+        downloaded = L.from_shortcode(post, target=target_dir)
         
         if downloaded:
             msg = f"Successfully downloaded post {shortcode} to {target_dir}"
