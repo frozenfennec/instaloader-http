@@ -36,6 +36,7 @@ def download_post(request: DownloadPostRequest):
     - **target_directory**: Optional subdirectory within the downloads volume.
     """
     shortcode = request.post_id
+    target_dir = request.target_directory
 
     try:
         # Load the post metadata
@@ -43,7 +44,7 @@ def download_post(request: DownloadPostRequest):
         logger.info(f"Post {shortcode} loaded successfully: {post}")
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        downloaded = L.download_post(post, target_dir)
+        downloaded = L.download_post(post, target=target_dir)
         
         if downloaded:
             msg = f"Successfully downloaded post {shortcode} to {target_dir}"
