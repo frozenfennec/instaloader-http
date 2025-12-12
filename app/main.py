@@ -34,7 +34,7 @@ def download_post(request: DownloadPostRequest):
     shortcode = request.post_id
     
     # Constrain downloads to the 'downloads' directory (mapped volume)
-    base_dir = "downloads"
+    base_dir = "/app/downloads"
     if request.target_directory:
         # Create path relative to the base downloads directory
         target_dir = os.path.join(base_dir, request.target_directory)
