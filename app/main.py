@@ -12,7 +12,11 @@ app = FastAPI(title="Instaloader REST API", version="1.0.0")
 
 # Singleton instance of Instaloader
 # We initialize it once to handle session pooling if needed in the future
-L = instaloader.Instaloader()
+L = instaloader.Instaloader(
+    sanitize_paths=True, 
+    download_video_thumbnails=False,
+    dirname_pattern="/app/downloads/{target}",
+)
 
 class DownloadPostRequest(BaseModel):
     post_id: str
@@ -32,24 +36,14 @@ def download_post(request: DownloadPostRequest):
     - **target_directory**: Optional subdirectory within the downloads volume.
     """
     shortcode = request.post_id
-    
-    # Constrain downloads to the 'downloads' directory (mapped volume)
-    base_dir = "/app/downloads"
-    if request.target_directory:
-        # Create path relative to the base downloads directory
-        target_dir = os.path.join(base_dir, request.target_directory)
-    else:
-        target_dir = base_dir
-
-    logger.info(f"Received download request for post {shortcode} to {target_dir}")
 
     try:
         # Load the post metadata
         post = instaloader.Post.from_shortcode(L.context, shortcode)
-        
+        logger.info(f"Post {shortcode} loaded successfully: {post}")
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        downloaded = L.from_shortcode(post, target=target_dir)
+        downloaded = L.download_post(post, target_dir)
         
         if downloaded:
             msg = f"Successfully downloaded post {shortcode} to {target_dir}"
