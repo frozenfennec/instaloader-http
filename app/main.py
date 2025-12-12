@@ -4,6 +4,8 @@ import instaloader
 import logging
 import os
 
+target_directory = "/app/downloads/"
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,7 +17,7 @@ app = FastAPI(title="Instaloader REST API", version="1.0.0")
 L = instaloader.Instaloader(
     sanitize_paths=True, 
     download_video_thumbnails=False,
-    dirname_pattern="/app/downloads/{target}",
+    dirname_pattern="{target_directory}",
 )
 
 class DownloadPostRequest(BaseModel):
@@ -36,7 +38,9 @@ def download_post(request: DownloadPostRequest):
     - **target_directory**: Optional subdirectory within the downloads volume.
     """
     shortcode = request.post_id
-    target_dir = request.target_directory
+    subdirectory = request.target_directory
+
+    target_dir = PathPosixPath(target_directory).joinpath(subdirectory)
 
     try:
         # Load the post metadata
