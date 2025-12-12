@@ -4,7 +4,7 @@ import instaloader
 import logging
 import os
 
-# target_directory = os.getenv("DOWNLOAD_DIR", "/app/downloads")
+target_directory = os.getenv("DOWNLOAD_DIR", "/app/downloads")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -45,12 +45,13 @@ def download_post(request: DownloadPostRequest):
         logger.info(f"Post {shortcode} loaded successfully: {post}")
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        downloaded = L.download_post(post, target=name)
+        path = os.path.join(target_directory, name)
+        downloaded = L.download_post(post, target=path)
         
         if downloaded:
-            msg = f"Successfully downloaded post {shortcode} to {name}"
+            msg = f"Successfully downloaded post {shortcode} to {path}"
         else:
-            msg = f"Post {shortcode} already exists in {name}"
+            msg = f"Post {shortcode} already exists in {path}"
 
         return DownloadResponse(
             status="success",
