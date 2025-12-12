@@ -5,6 +5,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV DOWNLOAD_DIR=/app/downloads
+RUN mkdir -p $DOWNLOAD_DIR
+
 COPY . .
 
 EXPOSE 8000

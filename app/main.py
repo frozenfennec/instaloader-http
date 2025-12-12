@@ -1,11 +1,11 @@
-from pathlib import PathPosixPath
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import instaloader
 import logging
 import os
 
-target_directory = "/app/downloads/"
+target_directory = os.getenv("DOWNLOAD_DIR", "/app/downloads")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,7 +41,7 @@ def download_post(request: DownloadPostRequest):
     shortcode = request.post_id
     subdirectory = request.target_directory
 
-    target_dir = PathPosixPath(target_directory).joinpath(subdirectory)
+    target_dir = Path(target_directory).joinpath(subdirectory) if subdirectory else Path(target_directory)
 
     try:
         # Load the post metadata

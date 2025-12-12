@@ -3,5 +3,7 @@ services:
     build: .
     ports:
       - "8000:8000"
+    environment:
+      - DOWNLOAD_DIR=/app/downloads
     volumes:
-      - ./data/instaloader_downloads:/app/downloads
+      - ${HOST_DOWNLOAD_PATH:-./data/instaloader_downloads}:/app/downloads
