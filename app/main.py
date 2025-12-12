@@ -16,7 +16,7 @@ L = instaloader.Instaloader()
 
 class DownloadPostRequest(BaseModel):
     post_id: str
-    target_directory: str
+    target_directory: str | None = None
 
 class DownloadResponse(BaseModel):
     status: str
@@ -29,10 +29,17 @@ def download_post(request: DownloadPostRequest):
     Download a post by its shortcode.
     
     - **post_id**: The shortcode of the Instagram post (e.g., 'B_C-dGqF-s')
-    - **target_directory**: The directory where the post should be saved.
+    - **target_directory**: Optional subdirectory within the downloads volume.
     """
     shortcode = request.post_id
-    target_dir = request.target_directory
+    
+    # Constrain downloads to the 'downloads' directory (mapped volume)
+    base_dir = "downloads"
+    if request.target_directory:
+        # Create path relative to the base downloads directory
+        target_dir = os.path.join(base_dir, request.target_directory)
+    else:
+        target_dir = base_dir
 
     logger.info(f"Received download request for post {shortcode} to {target_dir}")
 
@@ -41,7 +48,7 @@ def download_post(request: DownloadPostRequest):
         post = instaloader.Post.from_shortcode(L.context, shortcode)
         
         # Download the post
-        # Instaloader uses request.target_directory as the output folder name
+        # Instaloader uses target_dir as the output folder name
         downloaded = L.download_post(post, target=target_dir)
         
         if downloaded:

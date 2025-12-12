@@ -42,8 +42,9 @@ Use the `/api/v1/download/post` endpoint to download a post by its shortcode.
 
 **Parameters:**
 - `post_id`: The shortcode of the post (e.g., `B_C-dGqF-s` from `instagram.com/p/B_C-dGqF-s/`).
-- `target_directory`: The folder name where the download should be saved.
-  - **Important:** Use `downloads` to save to the mapped volume configured in `docker-compose.yml` (`./data/instaloader_downloads` on host).
+- `target_directory`: (Optional) A subdirectory name to create within the downloads folder.
+  - If omitted, files are saved directly to the volume root (`./data/instaloader_downloads`).
+  - If provided (e.g., `my-folder`), files are saved to `./data/instaloader_downloads/my-folder`.
 
 **Example Request (cURL):**
 
