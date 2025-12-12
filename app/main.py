@@ -1,4 +1,3 @@
-from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import instaloader
@@ -39,9 +38,7 @@ def download_post(request: DownloadPostRequest):
     - **target_directory**: Optional subdirectory within the downloads volume.
     """
     shortcode = request.post_id
-    subdirectory = request.target_directory
-
-    target_dir = Path(target_directory).joinpath(subdirectory) if subdirectory else Path(target_directory)
+    name = request.target_directory
 
     try:
         # Load the post metadata
@@ -49,12 +46,12 @@ def download_post(request: DownloadPostRequest):
         logger.info(f"Post {shortcode} loaded successfully: {post}")
         # Download the post
         # Instaloader uses target_dir as the output folder name
-        downloaded = L.download_post(post, target=target_dir)
+        downloaded = L.download_post(post, target=name)
         
         if downloaded:
-            msg = f"Successfully downloaded post {shortcode} to {target_dir}"
+            msg = f"Successfully downloaded post {shortcode} to {name}"
         else:
-            msg = f"Post {shortcode} already exists in {target_dir}"
+            msg = f"Post {shortcode} already exists in {name}"
 
         return DownloadResponse(
             status="success",
